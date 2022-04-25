@@ -3,6 +3,7 @@ import axios from "axios";
 import Grid from "./Gird";
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../../redux-store/user/user.slice";
+import ModalView from "../../component/Modal/Modal";
 
 /** Set duration */
 const useInterval = (callback, delay, duration) => {
@@ -39,7 +40,8 @@ function MemoryGame() {
     const userScore = useSelector((state) => state.user.userScore);
     const dispatch = useDispatch();
     const [score, setScore] = useState(0);
-
+    const [isShow, setIsShow] = React.useState(false);
+    const [modalShow, setModalShow] = React.useState(false);
     const currentDuration = duration - newDuration;
 
     const setUserTime = () => {
@@ -131,6 +133,7 @@ function MemoryGame() {
                 } else {
                     setScore(0)
                 }
+                setModalShow(true)
             }
         },
         [finishedItems]
@@ -148,21 +151,24 @@ function MemoryGame() {
                         setFinishedItems([]);
                         setWinner(false);
                         setUserTime();
-                        setScore(0);
-                        setDuration(0);
+                        setDuration(duration + 1)
                         setInterval(durationIntervalRef.current);
+                        setIsShow(true)
                     }}
                     className="btn btn-warning my-4"
                 >
                     New Game
                 </button>
+
                 <div>
                     You have {userTimes} times
                 </div>
                 {list.length === 0 ? (
                     <div>...Loading</div>
                 ) : (
-                    <div>
+                    <div style={{display: isShow ? "block" : "none"}}>
+                        Your time is {currentDuration} seconds
+                        <br />
                         <Grid
                             list={list}
                             visibleItems={visibleItems}
@@ -170,20 +176,18 @@ function MemoryGame() {
                             finishedItems={finishedItems}
                             checkItems={checkItems}
                         />
-                        {winner && (
-                            <div>
-                                You Win !
-                                <br />
-                                Finished in {currentDuration} seconds
-                                <br />
-                                The score of this game is {score}
-                                <br />
-                                The total of user score is {userScore}
-                            </div>
-                        )}
                     </div>
                 )}
             </div>
+            {winner &&
+                <ModalView
+                    show={modalShow}
+                    onHide={() => setModalShow(false)}
+                    currentDuration={currentDuration}
+                    score={score}
+                    userScore={userScore}
+                />
+            }
         </div>
     );
 }
