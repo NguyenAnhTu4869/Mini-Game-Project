@@ -29,7 +29,7 @@ module.exports = {
     updateScore: (req, res) => {
         let data = req.body;
         let userId = req.params.userId;
-        let sql = 'UPDATE users SET score = ? WHERE id = ?'
+        let sql = 'UPDATE users SET userScore = ? WHERE id = ?'
         db.query(sql, [data, userId], (err, response) => {
             if (err) throw err
             res.json({message: 'Update success!'}, response[0])
@@ -38,7 +38,7 @@ module.exports = {
     updateTimes: (req, res) => {
         let data = req.body;
         let userId = req.params.userId;
-        let sql = 'UPDATE users SET times = ? WHERE id = ?'
+        let sql = 'UPDATE users SET userTimes = ? WHERE id = ?'
         db.query(sql, [data, userId], (err, response) => {
             if (err) throw err
             res.json({message: 'Update success!'}, response[0])

@@ -32,17 +32,18 @@ function MemoryGame() {
     const [newGame, setNewGame] = useState(false);
     const [list, setList] = useState([]);
     const [visibleItems, setVisibleItems] = useState([]);
+    const [finishedItems, setFinishedItems] = useState([]);
     const [duration, setDuration] = useState(0);
     const [newDuration, setNewDuration] = useState(0);
-    const [finishedItems, setFinishedItems] = useState([]);
+    const currentDuration = duration - newDuration;
     const [winner, setWinner] = useState(false);
     const userTimes = useSelector((state) => state.user.userTimes);
     const userScore = useSelector((state) => state.user.userScore);
     const dispatch = useDispatch();
     const [score, setScore] = useState(0);
-    const [isShow, setIsShow] = React.useState(false);
-    const [modalShow, setModalShow] = React.useState(false);
-    const currentDuration = duration - newDuration;
+    const [isShow, setIsShow] = useState(false);
+    const [modalShow, setModalShow] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     const setUserTime = () => {
         dispatch(
@@ -144,6 +145,7 @@ function MemoryGame() {
             <div className="text-center p-6 d-flex flex-column">
                 <h1>Memory Game</h1>
                 <button
+                    className="btn btn-secondary my-4"
                     disabled={userTimes === 0 ? true : false}
                     onClick={() => {
                         setNewGame(!newGame);
@@ -155,7 +157,6 @@ function MemoryGame() {
                         setInterval(durationIntervalRef.current);
                         setIsShow(true)
                     }}
-                    className="btn btn-warning my-4"
                 >
                     New Game
                 </button>
