@@ -4,6 +4,7 @@ import Grid from "./Gird";
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../../redux-store/user/user.slice";
 
+/** Set duration */
 const useInterval = (callback, delay, duration) => {
     const durationRef = useRef(duration);
     const durationIntervalRef = useRef();
@@ -31,6 +32,7 @@ function MemoryGame() {
     const [list, setList] = useState([]);
     const [visibleItems, setVisibleItems] = useState([]);
     const [duration, setDuration] = useState(0);
+    const [newDuration, setNewDuration] = useState(0);
     const [finishedItems, setFinishedItems] = useState([]);
     const [winner, setWinner] = useState(false);
     const userTimes = useSelector((state) => state.user.userTimes);
@@ -38,12 +40,15 @@ function MemoryGame() {
     const dispatch = useDispatch();
     const [score, setScore] = useState(0);
 
+    const currentDuration = duration - newDuration;
+
     const setUserTime = () => {
         dispatch(
             userActions.updateUserTime({
                 userTimes: userTimes - 1,
             })
         );
+        setNewDuration(duration)
     }
 
     const checkItems = (firstIndex, secondIndex) => {
@@ -63,7 +68,7 @@ function MemoryGame() {
         () => {
             axios
                 .get(
-                    "https://api.unsplash.com/search/photos/?client_id=coqXaNZS1lcZNQ8yQQMViYOSW1Kg4JgLE5hNOnBcGl0&query=plant&per_page=2"
+                    "https://api.unsplash.com/search/photos/?client_id=coqXaNZS1lcZNQ8yQQMViYOSW1Kg4JgLE5hNOnBcGl0&query=plant&per_page=6"
                 )
                 .then(res => {
                     const newList = res.data.results.map(item => {
@@ -96,7 +101,6 @@ function MemoryGame() {
         durationRef => {
             durationRef.current++;
             setDuration(durationRef.current);
-            console.log(durationRef.current)
         },
         1000,
         duration,
@@ -118,11 +122,11 @@ function MemoryGame() {
             if (finishedItems.length > 0 && finishedItems.length === list.length) {
                 setWinner(true);
                 clearInterval(durationIntervalRef.current);
-                if (duration < 15) {
+                if (currentDuration < 15) {
                     setScore(15)
-                } else if (duration >= 15 && duration < 25) {
+                } else if (currentDuration >= 15 && currentDuration < 25) {
                     setScore(10)
-                } else if (duration >= 25 && duration < 60) {
+                } else if (currentDuration >= 25 && currentDuration < 60) {
                     setScore(5)
                 } else {
                     setScore(0)
@@ -170,7 +174,7 @@ function MemoryGame() {
                             <div>
                                 You Win !
                                 <br />
-                                Finished in {duration} seconds
+                                Finished in {currentDuration} seconds
                                 <br />
                                 The score of this game is {score}
                                 <br />

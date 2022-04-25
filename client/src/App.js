@@ -12,7 +12,7 @@ function App() {
 		<BrowserRouter>
 			{/* <Navbar /> */}
 			<Routes>
-				{/* <Route path='/' exact element={<Home />} /> */}
+				<Route path='/' exact element={<Home />} />
 				<Route path='/game/memory-game' exact element={<MemoryGame />} />
 			</Routes>
 		</BrowserRouter>
