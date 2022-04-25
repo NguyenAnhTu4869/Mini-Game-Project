@@ -1,0 +1,23 @@
+{
+  "name": "minigameapp",
+  "version": "1.0.0",
+  "description": "Final project app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NguyenAnhTu4869/Mini-Game-Project.git"
+  },
+  "author": "Nguyen Anh Tu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NguyenAnhTu4869/Mini-Game-Project/issues"
+  },
+  "homepage": "https://github.com/NguyenAnhTu4869/Mini-Game-Project#readme",
+  "dependencies": {
+    "express": "^4.17.3"
+  }
+}
