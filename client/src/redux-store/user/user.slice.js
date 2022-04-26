@@ -7,6 +7,7 @@ const initialState = {
     userTimes: 0,
     userScore: 0,
     isLogin: false,
+    isAccepted: false,
 }
 
 const userSlice = createSlice({
@@ -24,6 +25,9 @@ const userSlice = createSlice({
         },
         updateUserScore(state, action) {
             state.userScore = action.payload.userScore;
+        },
+        updateAcceptedExchange(state, action) {
+            state.isAccepted = action.payload.isAccepted;
         },
         logoutUser() {
             return initialState;

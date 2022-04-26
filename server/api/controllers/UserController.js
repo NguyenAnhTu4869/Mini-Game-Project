@@ -73,17 +73,6 @@ module.exports = {
         })
     },
 
-    /** Update user score */
-    updateScore: (req, res) => {
-        let data = req.body;
-        let userId = req.params.userId;
-        let sql = 'UPDATE users SET userScore = ? WHERE id = ?'
-        db.query(sql, [data, userId], (err, response) => {
-            if (err) throw err
-            res.json({ message: 'Update success!' }, response[0])
-        })
-    },
-
     /** Update user times */
     updateTimes: (req, res) => {
         let userData = Object.keys(req.body);
@@ -97,6 +86,24 @@ module.exports = {
             } else {
                 if (response.length > 0) {
                     res.json({ message: 'Update times success', code: '1', data })
+                }
+            }
+        })
+    },
+
+    /** Update user score */
+    updateScore: (req, res) => {
+        let userData = Object.keys(req.body);
+        let data = JSON.parse(userData[0]);
+        let userScore = data.userScore;
+        let userId = req.params.userId;
+        let sql = 'UPDATE users SET userScore = ? WHERE id = ?'
+        db.query(sql, [userScore, userId], (err, response) => {
+            if (err) {
+                res.json({ message: 'Warning error', code: '-1' })
+            } else {
+                if (response.length > 0) {
+                    res.json({ message: 'Update score success', code: '1', data })
                 }
             }
         })

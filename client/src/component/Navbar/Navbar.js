@@ -23,11 +23,11 @@ const MenuBar = () => {
                     </li>
                     <NavDropdown className="nav-item mx-lg-4"
                         id="navbarDropdownMenuLink"
-                        title="Game List"
+                        title="Memory Game"
                         menuVariant="dark">
-                        <Link className="dropdown-item my-2" to="/game/memory-game">Memory Game</Link>
-                        <Link className="dropdown-item my-2" to="/game/">Game</Link>
-                        <Link className="dropdown-item my-2" to="/game/">Game</Link>
+                        <Link className="dropdown-item my-2" to="/memory-game/1">Level 1</Link>
+                        <Link className="dropdown-item my-2" to="/memory-game/2">Level 2</Link>
+                        <Link className="dropdown-item my-2" to="/memory-game/3">Level 3</Link>
                     </NavDropdown>
                     <li className="nav-item mx-lg-4">
                         <Link className="nav-link" to="/gift">Gift</Link>

@@ -4,6 +4,9 @@
 const express = require("express");
 const app = express();
 
+//import nodemailer
+const nodemailer = require("nodemailer");
+
 //import sql
 require('dotenv').config("../env");
 

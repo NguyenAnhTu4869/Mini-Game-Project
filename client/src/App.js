@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import MenuBar from "./component/Navbar/Navbar";
 import Login from "./pages/Login"
 import Home from "./pages/Home";
+import Gift from "./pages/Gift";
 import MemoryGame from "./games/MemoryGame/MemoryGame";
 
 /** Access page before login */
@@ -39,7 +40,8 @@ function App() {
 				<PrivateRoute>
 					<Route path='/login' exact element={<Navigate to='/' />} />
 					<Route path='/' exact element={<Home />} />
-					<Route path='/game/memory-game' exact element={<MemoryGame />} />
+					<Route path='/gift' exact element={<Gift />} />
+					<Route path='/memory-game/:level' element={<MemoryGame />} />
 				</PrivateRoute>
 			)}
 			{!isLogin && (

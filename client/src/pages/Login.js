@@ -48,7 +48,7 @@ const handleSignIn = async (values, setPopupShow, setMessage, setUserData) => {
             setPopupShow(true);
             setMessage(res.data.message);
             let userData = res.data.data;
-            if (userData !== undefined){
+            if (userData !== undefined) {
                 setUserData(userData);
             }
         })
@@ -84,7 +84,7 @@ function Login() {
 
     /** Update user data in redux */
     useEffect(() => {
-        if (userData.id !== 0){
+        if (userData.id !== 0) {
             dispatch(
                 userActions.updateUserInfo({
                     userId: userData.id,
@@ -92,7 +92,7 @@ function Login() {
                     userEmail: userData.userEmail,
                 })
             );
-            dispatch(   
+            dispatch(
                 userActions.updateUserTime({
                     userTimes: userData.userTimes,
                 })
@@ -165,11 +165,7 @@ function Login() {
                                         type={"email"}
                                         placeholder={"Enter your email"}
                                     />
-                                    <button type="submit"
-                                        className="btn btn-dark btn-md mt-3"
-                                        onClick={() => {
-
-                                        }}>
+                                    <button type="submit" className="btn btn-dark btn-md mt-3">
                                         Sign In
                                     </button>
                                 </Form>
@@ -208,7 +204,9 @@ function Login() {
                                         type={"email"}
                                         placeholder={"Enter your email"}
                                     />
-                                    <button type="submit" className="btn btn-dark btn-md mt-3">Sign Up</button>
+                                    <button type="submit" className="btn btn-dark btn-md mt-3">
+                                        Sign Up
+                                    </button>
                                 </Form>
                             )}
                         </Formik>

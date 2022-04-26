@@ -4,6 +4,7 @@ import Grid from "./Gird";
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../../redux-store/user/user.slice";
 import ModalView from "../../component/Modal/Modal";
+import { useParams } from "react-router-dom";
 
 /** Set duration */
 const useInterval = (callback, delay, duration) => {
@@ -37,15 +38,28 @@ const handleUpdateTimes = async (id, times) => {
     })
         .then((res) => {
             console.log(res)
-            // setPopupShow(true);
-            // setMessage(res.data.message);
         })
         .catch((error) => {
-            // setPopupShow(true);
-            // setMessage(error);
+            console.log(error)
         });
 }
 
+/** Update score database */
+const handleUpdateScore = async (id, userScore, score) => {
+    let data = { userScore: (userScore + score) }
+    await axios.put('http://localhost:8080/users/score/' + id, data, {
+        headers: {
+            accept: 'application/json',
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+        }
+    })
+        .then((res) => {
+            console.log(res)
+        })
+        .catch((error) => {
+            console.log(error)
+        });
+}
 
 function MemoryGame() {
     const [newGame, setNewGame] = useState(false);
@@ -63,6 +77,9 @@ function MemoryGame() {
     const [score, setScore] = useState(0);
     const [isShow, setIsShow] = useState(false);
     const [modalShow, setModalShow] = useState(false);
+
+    // define level game
+    let { level } = useParams();
 
     const setUserTime = () => {
         handleUpdateTimes(userId, userTimes);
@@ -87,12 +104,25 @@ function MemoryGame() {
         }
     };
 
+    var url = "";
+    switch (level) {
+        case "1":
+            url = "https://api.unsplash.com/search/photos/?client_id=coqXaNZS1lcZNQ8yQQMViYOSW1Kg4JgLE5hNOnBcGl0&query=plant&per_page=6"
+            break;
+        case "2":
+            url = "https://api.unsplash.com/search/photos/?client_id=coqXaNZS1lcZNQ8yQQMViYOSW1Kg4JgLE5hNOnBcGl0&query=game&per_page=12"
+            break;
+        case "3":
+            url = "https://api.unsplash.com/search/photos/?client_id=coqXaNZS1lcZNQ8yQQMViYOSW1Kg4JgLE5hNOnBcGl0&query=galaxy&per_page=18"
+            break;
+        default:
+            break;
+    }
+
     useEffect(
         () => {
             axios
-                .get(
-                    "https://api.unsplash.com/search/photos/?client_id=coqXaNZS1lcZNQ8yQQMViYOSW1Kg4JgLE5hNOnBcGl0&query=plant&per_page=6"
-                )
+                .get(url)
                 .then(res => {
                     const newList = res.data.results.map(item => {
                         return {
@@ -131,6 +161,7 @@ function MemoryGame() {
 
     useEffect(
         () => {
+            handleUpdateScore(userId, userScore, score);
             dispatch(
                 userActions.updateUserScore({
                     userScore: userScore + score,
@@ -145,14 +176,45 @@ function MemoryGame() {
             if (finishedItems.length > 0 && finishedItems.length === list.length) {
                 setWinner(true);
                 clearInterval(durationIntervalRef.current);
-                if (currentDuration < 15) {
-                    setScore(15)
-                } else if (currentDuration >= 15 && currentDuration < 25) {
-                    setScore(10)
-                } else if (currentDuration >= 25 && currentDuration < 60) {
-                    setScore(5)
-                } else {
-                    setScore(0)
+                switch (level) {
+                    case "1":
+                        if (currentDuration < 15) {
+                            setScore(20)
+                        } else if (currentDuration >= 15 && currentDuration < 25) {
+                            setScore(15)
+                        } else if (currentDuration >= 25 && currentDuration < 60) {
+                            setScore(10)
+                        } else {
+                            setScore(0)
+                        }
+                        break;
+
+                    case "2":
+                        if (currentDuration < 35) {
+                            setScore(25)
+                        } else if (currentDuration >= 35 && currentDuration < 65) {
+                            setScore(20)
+                        } else if (currentDuration >= 65 && currentDuration < 105) {
+                            setScore(15)
+                        } else {
+                            setScore(0)
+                        }
+                        break;
+
+                    case "3":
+                        if (currentDuration < 60) {
+                            setScore(50)
+                        } else if (currentDuration >= 60 && currentDuration < 90) {
+                            setScore(40)
+                        } else if (currentDuration >= 90 && currentDuration < 120) {
+                            setScore(35)
+                        } else {
+                            setScore(0)
+                        }
+                        break;
+
+                    default:
+                        break;
                 }
                 setModalShow(true)
             }
@@ -163,7 +225,7 @@ function MemoryGame() {
     return (
         <div className="container">
             <div className="text-center p-6 d-flex flex-column">
-                <h1>Memory Game</h1>
+                <h1>Memory Game Level {level}</h1>
                 <button
                     className="btn btn-secondary my-4"
                     disabled={userTimes === 0 ? true : false}

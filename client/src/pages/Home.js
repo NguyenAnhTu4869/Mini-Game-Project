@@ -2,7 +2,9 @@ import React from "react";
 
 function Home() {
     return (
-        <h1>Home page</h1>
+        <div className="container">
+            <h1 className="text-center">Welcome Mini Game App</h1>
+        </div>
     )
 }
 
