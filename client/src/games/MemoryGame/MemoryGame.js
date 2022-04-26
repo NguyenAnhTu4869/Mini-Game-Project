@@ -21,12 +21,31 @@ const useInterval = (callback, delay, duration) => {
             return () => {
                 clearInterval(durationInterval);
             };
-        },
-        [duration]
-    );
+        }, [duration]);
 
     return durationIntervalRef;
 };
+
+/** Update times database */
+const handleUpdateTimes = async (id, times) => {
+    let data = { userTimes: (times - 1) }
+    await axios.put('http://localhost:8080/users/times/' + id, data, {
+        headers: {
+            accept: 'application/json',
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+        }
+    })
+        .then((res) => {
+            console.log(res)
+            // setPopupShow(true);
+            // setMessage(res.data.message);
+        })
+        .catch((error) => {
+            // setPopupShow(true);
+            // setMessage(error);
+        });
+}
+
 
 function MemoryGame() {
     const [newGame, setNewGame] = useState(false);
@@ -39,13 +58,14 @@ function MemoryGame() {
     const [winner, setWinner] = useState(false);
     const userTimes = useSelector((state) => state.user.userTimes);
     const userScore = useSelector((state) => state.user.userScore);
+    const userId = useSelector((state) => state.user.userId);
     const dispatch = useDispatch();
     const [score, setScore] = useState(0);
     const [isShow, setIsShow] = useState(false);
     const [modalShow, setModalShow] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
 
     const setUserTime = () => {
+        handleUpdateTimes(userId, userTimes);
         dispatch(
             userActions.updateUserTime({
                 userTimes: userTimes - 1,
@@ -167,7 +187,7 @@ function MemoryGame() {
                 {list.length === 0 ? (
                     <div>...Loading</div>
                 ) : (
-                    <div style={{display: isShow ? "block" : "none"}}>
+                    <div style={{ display: isShow ? "block" : "none" }}>
                         Your time is {currentDuration} seconds
                         <br />
                         <Grid

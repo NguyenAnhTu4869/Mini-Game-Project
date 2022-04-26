@@ -1,6 +1,7 @@
 'use strict';
 const mysql = require('mysql');
 
+//connect mySQL mini_game
 const db = mysql.createConnection({
     host: process.env.DB_HOST || "localhost",
     user: process.env.DB_USER || "root",
@@ -8,7 +9,7 @@ const db = mysql.createConnection({
     database: process.env.DB_NAME || "mini_game"
 });
 
-db.connect(function(err, connection) {
+db.connect(function (err, db) {
     if(err) console.log("Can't connect SQL")
 })
 

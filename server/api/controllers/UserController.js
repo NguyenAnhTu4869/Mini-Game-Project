@@ -1,47 +1,104 @@
 'use strict'
-const util = require('util')
-const mysql = require('mysql')
-const db = require('../db')
+const util = require('util');
+const mysql = require('mysql');
+const db = require('../db');
 
 module.exports = {
+    /** Sign up */
     create: (req, res) => {
-        let data = req.body;
-        let sql = 'INSERT INTO users SET ?'
-        db.query(sql, [data], (err, response) => {
-            if (err) throw err
-            res.json({message: 'Insert success!'}, response[0])
+        let userData = Object.keys(req.body);
+        let data = JSON.parse(userData[0]);
+        let userName = data.userName;
+        let userEmail = data.userEmail;
+        let sql = "INSERT INTO users (userName, userEmail) VALUES (?, ?)";
+        db.query(sql, [userName, userEmail], (err, response) => {
+            if (err) {
+                switch (err.code) {
+                    case "ER_DUP_ENTRY":
+                        res.json({ message: 'This account have been used', code: '-1' })
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                res.json({ message: 'Create success!', code: '1' })
+            }
         })
     },
+
+    /** Sign in */
     get: (req, res) => {
-        let sql = 'SELECT * FROM users'
-        db.query(sql, (err, response) => {
-            if (err) throw err
-            res.json(response)
+        let data = req.query
+        let userName = data.userName;
+        let userEmail = data.userEmail;
+        let sql = 'SELECT * FROM users WHERE userName = ? AND userEmail = ?'
+        db.query(sql, [userName, userEmail], (err, response) => {
+            if (err) {
+                res.json({ message: 'Please check your account again', code: '-1' })
+            } else {
+                if (response.length > 0) {
+                    let data = {
+                        id: response[0].id,
+                        userName: response[0].userName,
+                        userEmail: response[0].userEmail,
+                        userTimes: response[0].userTimes,
+                        userScore: response[0].userScore
+                    }
+                    res.json({ message: 'Login success', code: '1', data })
+                } else {
+                    res.json({ message: 'Please check your account again', code: '-1' })
+                }
+            }
         })
     },
+
+    /** Get user data */
     detail: (req, res) => {
         let sql = 'SELECT * FROM users WHERE id = ?'
         db.query(sql, [req.params.userId], (err, response) => {
-            if (err) throw err
-            res.json(response[0])
+            if (err) {
+                res.json({ message: 'This account is not exist', code: '-1' })
+            } else {
+                if (response.length > 0) {
+                    let data = {
+                        id: response[0].id,
+                        userName: response[0].userName,
+                        userEmail: response[0].userEmail,
+                        userTimes: response[0].userTimes,
+                        userScore: response[0].userScore
+                    }
+                    res.json({ message: 'This account is exist', code: '1', data })
+                }
+            }
         })
     },
+
+    /** Update user score */
     updateScore: (req, res) => {
         let data = req.body;
         let userId = req.params.userId;
         let sql = 'UPDATE users SET userScore = ? WHERE id = ?'
         db.query(sql, [data, userId], (err, response) => {
             if (err) throw err
-            res.json({message: 'Update success!'}, response[0])
+            res.json({ message: 'Update success!' }, response[0])
         })
     },
+
+    /** Update user times */
     updateTimes: (req, res) => {
-        let data = req.body;
+        let userData = Object.keys(req.body);
+        let data = JSON.parse(userData[0]);
+        let userTimes = data.userTimes;
         let userId = req.params.userId;
         let sql = 'UPDATE users SET userTimes = ? WHERE id = ?'
-        db.query(sql, [data, userId], (err, response) => {
-            if (err) throw err
-            res.json({message: 'Update success!'}, response[0])
+        db.query(sql, [userTimes, userId], (err, response) => {
+            if (err) {
+                res.json({ message: 'Warning error', code: '-1' })
+            } else {
+                if (response.length > 0) {
+                    res.json({ message: 'Update times success', code: '1', data })
+                }
+            }
         })
     },
 }

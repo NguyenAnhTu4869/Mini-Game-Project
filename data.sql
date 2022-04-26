@@ -9,5 +9,5 @@ CREATE TABLE `users` (
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
-INSERT INTO `users` VALUES ('1', 'admin', 'finalprojectmanagement@gmail.com', '10', '0');
+INSERT INTO `users` VALUES ('1', 'admin', 'finalprojectmanagement@gmail.com', '30', '99999999');
 INSERT INTO `users` VALUES ('2', 'anhtu', 'tunagcs18435@fpt.edu.vn', '10', '0');

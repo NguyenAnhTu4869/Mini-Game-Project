@@ -1,8 +1,17 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { NavDropdown, Navbar, Nav, Container } from "react-bootstrap";
+import { NavDropdown, Navbar, Nav } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { userActions } from "../../redux-store/user/user.slice";
 
 const MenuBar = () => {
+    const userName = useSelector((state) => state.user.userName);
+    const dispatch = useDispatch();
+
+    const handleLogOut = () => {
+        dispatch(userActions.logoutUser())
+    }
+
     return (
         <Navbar className="navbar-dark px-3 px-lg-5" bg="dark" expand="lg">
             <Link className="navbar-brand" to="/">Mini Game App</Link>
@@ -29,7 +38,7 @@ const MenuBar = () => {
                 </Nav>
                 <Navbar.Collapse className="justify-content-end navbar-dark my-lg-2">
                     <Navbar.Text>
-                        User: <Link to="/login">Mark Otto</Link>
+                        User: <Link to="/login" onClick={() => handleLogOut()}>{userName}</Link>
                     </Navbar.Text>
                 </Navbar.Collapse>
             </Navbar.Collapse>
