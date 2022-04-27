@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
@@ -61,6 +61,28 @@ const handleUpdateGift = async (giftId, giftAmount) => {
         });
 }
 
+/** Send mail success */
+const handleSendMail = async (userEmail, giftName) => {
+    let data = {
+        userEmail: userEmail,
+        giftName: giftName
+    }
+    await axios.post('http://localhost:8080/mail', data, {
+        headers: {
+            accept: 'application/json',
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+        }
+    })
+        .then((res) => {
+            console.log(res)
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+
+}
+
+// Table header
 function EnhancedTableHead(props) {
     return (
         <TableHead>
@@ -87,32 +109,38 @@ function EnhancedTableHead(props) {
                         {column.label}
                     </TableCell>
                 ))}
-                <TableCell
-                    key={"button"}
-                    align={"center"}
-                    width={"20%"}
-                    sx={{
-                        fontWeight: "700",
-                        fontSize: "15px"
-                    }}>
-                    Exchange
-                </TableCell>
+                {props.hasBtn ?
+                    <TableCell
+                        key={"button"}
+                        align={"center"}
+                        width={"20%"}
+                        sx={{
+                            fontWeight: "700",
+                            fontSize: "15px"
+                        }}>
+                        Exchange
+                    </TableCell> :
+                    <Fragment></Fragment>
+                }
             </TableRow>
         </TableHead>
     )
 }
 
-export const EnhancedTable = ({ columns, rows }) => {
+// Table
+export const EnhancedTable = ({ columns, rows, ...props }) => {
     const [message, setMessage] = useState("");
     const [popupShow, setPopupShow] = useState(false);
     const [index, setIndex] = useState(0);
     const [giftId, setGiftId] = useState(0);
     const [giftAmount, setGiftAmount] = useState(0);
     const [giftPoint, setGiftPoint] = useState(0);
+    const [giftName, setGiftName] = useState("");
     const isAccepted = useSelector((state) => state.user.isAccepted)
     const userTimes = useSelector((state) => state.user.userTimes);
     const userScore = useSelector((state) => state.user.userScore);
     const userId = useSelector((state) => state.user.userId);
+    const userEmail = useSelector((state) => state.user.userEmail);
     const dispatch = useDispatch()
 
     // Select exchange gift
@@ -149,36 +177,6 @@ export const EnhancedTable = ({ columns, rows }) => {
                     );
                     break;
 
-                // case 3:
-                //     handleUpdateScore(userId, userScore, 100);
-                //     dispatch(
-                //         userActions.updateUserScore({
-                //             userScore: userScore - 100,
-                //         })
-                //     );
-                //     handleUpdateGift(giftId, giftAmount)
-                //     break;
-
-                // case 4:
-                //     handleUpdateScore(userId, userScore, 500);
-                //     dispatch(
-                //         userActions.updateUserScore({
-                //             userScore: userScore - 500,
-                //         })
-                //     );
-                //     handleUpdateGift(giftId, giftAmount)
-                //     break;
-
-                // case 5:
-                //     handleUpdateScore(userId, userScore, 500);
-                //     dispatch(
-                //         userActions.updateUserScore({
-                //             userScore: userScore - 500,
-                //         })
-                //     );
-                //     handleUpdateGift(giftId, giftAmount)
-                //     break;
-
                 default:
                     handleUpdateScore(userId, userScore, giftPoint);
                     dispatch(
@@ -187,6 +185,7 @@ export const EnhancedTable = ({ columns, rows }) => {
                         })
                     );
                     handleUpdateGift(giftId, giftAmount)
+                    handleSendMail(userEmail, giftName)
                     break;
             }
         }
@@ -202,7 +201,7 @@ export const EnhancedTable = ({ columns, rows }) => {
     return (
         <TableContainer>
             <Table>
-                <EnhancedTableHead columns={columns} />
+                <EnhancedTableHead columns={columns} hasBtn={props.hasBtn} />
                 <TableBody>
                     {rows.map((row, index) => (
                         <TableRow key={row.id}>
@@ -228,21 +227,25 @@ export const EnhancedTable = ({ columns, rows }) => {
                                     </TableCell>
                                 );
                             })}
-                            <TableCell key={"Button " + (index + 1)} align={"center"}>
-                                <button
-                                    disabled={(row.amount > 0 || row.amount === null) && userScore > row.point ? false : true}
-                                    className="btn btn-secondary"
-                                    onClick={() => {
-                                        setIndex(index + 1);
-                                        setPopupShow(true);
-                                        setMessage("Do you accept exchange this");
-                                        setGiftId(row.id);
-                                        setGiftAmount(row.amount);
-                                        setGiftPoint(row.point);
-                                    }}>
-                                    Exchange
-                                </button>
-                            </TableCell>
+                            {props.hasBtn ?
+                                <TableCell key={"Button " + (index + 1)} align={"center"}>
+                                    <button
+                                        disabled={(row.amount > 0 || row.amount === null) && userScore >= row.point ? false : true}
+                                        className="btn btn-secondary"
+                                        onClick={() => {
+                                            setIndex(index + 1);
+                                            setPopupShow(true);
+                                            setMessage("Do you accept exchange this");
+                                            setGiftId(row.id);
+                                            setGiftAmount(row.amount);
+                                            setGiftPoint(row.point);
+                                            setGiftName(row.name)
+                                        }}>
+                                        Exchange
+                                    </button>
+                                </TableCell> :
+                                <Fragment></Fragment>
+                            }
                         </TableRow>
                     ))}
                 </TableBody>

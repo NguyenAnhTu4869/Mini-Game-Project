@@ -108,4 +108,30 @@ module.exports = {
             }
         })
     },
+
+    /** Get top user score */
+    getList: (req, res) => {
+        let sql = 'SELECT * FROM users WHERE id > 1 ORDER BY userScore DESC LIMIT 5;'
+        db.query(sql, (err, response) => {
+            if (err) {
+                res.json({ message: "Can't load the list user", code: '-1' })
+            } else {
+                let dataUser = response;
+                var x = dataUser.length;
+                var data = [];
+                for (var i = 0; i < x; i++) {
+                    var temp = {
+                        username: dataUser[i].userName,
+                        userscore: dataUser[i].userScore,
+                    }
+                    data.push(temp)
+                }
+                if (response.length > 0) {
+                    res.json({ message: 'Load list success', code: '1', data })
+                } else {
+                    res.json({ message: "Can't load the list user", code: '-1' })
+                }
+            }
+        })
+    }
 }

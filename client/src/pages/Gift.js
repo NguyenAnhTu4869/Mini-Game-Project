@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { EnhancedTable } from "../component/Table/Table";
-import { TableHeader } from "../component/Table/TableHeader"
+import { GiftHeader } from "../component/Table/TableHeader";
 import axios from "axios";
 import { useSelector } from "react-redux";
 
@@ -62,8 +62,9 @@ function Gift() {
                 <div className="col col-lg-8 mb-4">
                     <h2 className="text-center">List gift</h2>
                     <EnhancedTable
-                        columns={TableHeader}
+                        columns={GiftHeader}
                         rows={dataTable}
+                        hasBtn={true}
                     />
                 </div>
             </div>
