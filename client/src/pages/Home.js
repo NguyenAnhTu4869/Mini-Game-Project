@@ -13,6 +13,7 @@ const handleGetListUser = async (setDataTable) => {
         .then((res) => {
             var tableData = res.data.data.map((content) => {
                 return {
+                    id: content.id,
                     username: content.username,
                     userscore: content.userscore,
                 };

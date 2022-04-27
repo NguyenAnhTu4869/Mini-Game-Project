@@ -121,6 +121,7 @@ module.exports = {
                 var data = [];
                 for (var i = 0; i < x; i++) {
                     var temp = {
+                        id: dataUser[i].id,
                         username: dataUser[i].userName,
                         userscore: dataUser[i].userScore,
                     }

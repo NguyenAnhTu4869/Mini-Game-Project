@@ -8,6 +8,7 @@ import MenuBar from "./component/Navbar/Navbar";
 import Login from "./pages/Login"
 import Home from "./pages/Home";
 import Gift from "./pages/Gift";
+import About from "./pages/About";
 import MemoryGame from "./games/MemoryGame/MemoryGame";
 
 /** Access page before login */
@@ -41,6 +42,7 @@ function App() {
 					<Route path='/login' exact element={<Navigate to='/' />} />
 					<Route path='/' exact element={<Home />} />
 					<Route path='/gift' exact element={<Gift />} />
+					<Route path='/about-us' exact element={<About />} />
 					<Route path='/memory-game/:level' element={<MemoryGame />} />
 				</PrivateRoute>
 			)}
